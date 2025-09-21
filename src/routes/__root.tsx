@@ -2,20 +2,17 @@ import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 
-import Header from '../components/Header'
-
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-
 import type { QueryClient } from '@tanstack/react-query'
+import type { useAuth } from '@/features/auth/hooks/useAuth'
 
 interface MyRouterContext {
   queryClient: QueryClient
+  auth: ReturnType<typeof useAuth>
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <Header />
       <Outlet />
       <TanstackDevtools
         config={{
@@ -26,7 +23,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
             name: 'Tanstack Router',
             render: <TanStackRouterDevtoolsPanel />,
           },
-          TanStackQueryDevtools,
         ]}
       />
     </>
