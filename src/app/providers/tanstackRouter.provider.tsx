@@ -1,6 +1,8 @@
 // tanstackRouter.provider.tsx
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { IconLoader } from '@tabler/icons-react'
+import LoopIcon from '@mui/icons-material/Loop'
+import { keyframes } from '@emotion/react'
+import styled from '@emotion/styled'
 import { routeTree } from '@/routeTree.gen'
 import { getContext } from '@/app/providers/tanstackQuery.provider'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -32,10 +34,31 @@ export default function TanstackRouterProvider() {
   // Show loader until auth is ready
   if (!auth.isAuthReady) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <IconLoader className="animate-spin h-5 w-5" />
-      </div>
+      <LoaderWrapper>
+        <LoaderIcon />
+      </LoaderWrapper>
     )
   }
+
   return <RouterProvider router={router} context={{ ...context, auth }} />
 }
+
+// Spinner animation
+const spin = keyframes`
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const LoaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+`
+
+const LoaderIcon = styled(LoopIcon)`
+  width: 20px;
+  height: 20px;
+  animation: ${spin} 1s linear infinite;
+`

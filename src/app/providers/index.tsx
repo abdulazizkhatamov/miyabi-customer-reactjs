@@ -1,3 +1,4 @@
+import MuiProvider from './mui.provider'
 import ReduxStoreProvider from './reduxStore.provider'
 import TanstackRouterProvider from './tanstackRouter.provider'
 
@@ -11,7 +12,9 @@ export default function Providers() {
   return (
     <ReduxStoreProvider>
       <TanstackQueryProvider {...TanStackQueryProviderContext}>
-        <TanstackRouterProvider />
+        <MuiProvider>
+          <TanstackRouterProvider />
+        </MuiProvider>
       </TanstackQueryProvider>
     </ReduxStoreProvider>
   )
