@@ -2,15 +2,15 @@
 import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
-  breakpoints: {
-    values: {
-      xs: 0, // default
-      sm: 576, // default
-      md: 992, // default
-      lg: 1248, // default
-      xl: 1536, // default
-    },
-  },
+  // breakpoints: {
+  //   values: {
+  //     xs: 0,
+  //     sm: 576,
+  //     md: 768,
+  //     lg: 1248,
+  //     xl: 1536,
+  //   },
+  // },
 })
 
 export default theme
