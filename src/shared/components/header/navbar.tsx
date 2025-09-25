@@ -3,8 +3,6 @@ import { css } from '@emotion/react'
 import { Badge, Container, useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
 import { Menu, Person, Search, ShoppingCart } from '@mui/icons-material'
-import logo from '@/shared/images/logo.png'
-import logoWhite from '@/shared/images/logo_white.svg'
 
 type NavbarProps = {
   onMenuClick: () => void
@@ -27,22 +25,21 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             {/* Logo */}
             <div css={logoWrapper(theme)}>
               <Link to="/" css={logoLink(theme)}>
-                {/* White logo for mobile */}
-                <img
-                  src={logoWhite}
-                  alt="Yaponamama"
-                  width={105}
-                  height={32}
-                  css={logoMobile(theme)}
-                />
-                {/* Default logo for desktop */}
-                <img
-                  src={logo}
-                  alt="Yaponamama"
-                  width={105}
-                  height={32}
-                  css={logoDesktop(theme)}
-                />
+                <span
+                  css={css({
+                    display: 'block',
+                    fontFamily: 'Hiromisake, sans-serif',
+                    fontSize: '1.5rem',
+                    textAlign: 'center',
+                    color: '#fff', // default = white for mobile
+                    [theme.breakpoints.up('md')]: {
+                      fontSize: '1.2rem',
+                      color: '#000', // black on desktop
+                    },
+                  })}
+                >
+                  miyabi house
+                </span>
               </Link>
             </div>
           </div>
@@ -147,18 +144,6 @@ const logoLink = (theme: any) =>
       background: '#fff',
       padding: '2px',
     },
-  })
-
-const logoMobile = (theme: any) =>
-  css({
-    display: 'block',
-    [theme.breakpoints.up('md')]: { display: 'none' },
-  })
-
-const logoDesktop = (theme: any) =>
-  css({
-    display: 'none',
-    [theme.breakpoints.up('md')]: { display: 'block' },
   })
 
 const rightSection = (theme: any) =>

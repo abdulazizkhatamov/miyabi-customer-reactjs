@@ -10,10 +10,6 @@ import {
   YouTube as YouTubeIcon,
 } from '@mui/icons-material'
 
-import logoImage from '@/shared/images/logo.png'
-import appStoreImage from '@/shared/images/app_store.svg'
-import googlePlayImage from '@/shared/images/google_play.svg'
-
 export default function Footer() {
   const theme = useTheme()
 
@@ -25,13 +21,20 @@ export default function Footer() {
           {/* Logo */}
           <div css={footerLogoWrapper(theme)}>
             <Link to="/" aria-label="Home">
-              <img
-                alt="Yaponamama logo"
-                src={logoImage}
-                width={182}
-                height={56}
-                decoding="async"
-              />
+              <span
+                css={css({
+                  display: 'block',
+                  fontFamily: 'Hiromisake, sans-serif',
+                  fontSize: '1.75rem',
+                  fontWeight: 400,
+
+                  [theme.breakpoints.up('lg')]: {
+                    fontSize: '2rem',
+                  },
+                })}
+              >
+                miyabi house
+              </span>
             </Link>
           </div>
 
@@ -103,7 +106,7 @@ export default function Footer() {
                   aria-label="Download on App Store"
                 >
                   <img
-                    src={appStoreImage}
+                    src={'/images/app_store.svg'}
                     width={110}
                     height={35}
                     alt="App Store"
@@ -116,7 +119,7 @@ export default function Footer() {
                   aria-label="Download on Google Play"
                 >
                   <img
-                    src={googlePlayImage}
+                    src={'/images/google_play.svg'}
                     width={110}
                     height={35}
                     alt="Google Play"
