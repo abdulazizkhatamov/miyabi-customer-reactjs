@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import type { ProductsPage } from '@/shared/schema/product.schema'
 import axiosInstance from '@/config/axios.config'
 import ProductCard from '@/shared/components/product-card'
+import { productsPageSchema } from '@/shared/schema/product.schema'
 
 function CategoryProducts({
   categorySlug,
@@ -14,13 +16,14 @@ function CategoryProducts({
   const loaderRef = useRef<HTMLDivElement | null>(null)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
+    useInfiniteQuery<ProductsPage>({
       queryKey: ['products', categorySlug],
-      queryFn: async ({ pageParam = 1 }) => {
+      queryFn: async ({ pageParam = 1 }): Promise<ProductsPage> => {
         const res = await axiosInstance.get('/products', {
           params: { categorySlug, page: pageParam, limit: 6 },
         })
-        return res.data
+        // ✅ validate response at runtime
+        return productsPageSchema.parse(res.data)
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage) =>
@@ -50,12 +53,22 @@ function CategoryProducts({
       ) : (
         <Box
           display="grid"
-          gridTemplateColumns={{ xs: 'repeat(2,1fr)', md: 'repeat(3,1fr)' }}
+          gridTemplateColumns={{
+            xs: 'repeat(2, 1fr)', // 2 per row on extra-small screens
+            md: 'repeat(3, 1fr)', // 3 per row on medium screens
+            lg: 'repeat(4, 1fr)', // 4 per row on large screens
+          }}
           gap={2}
         >
-          {data?.pages.flatMap((p: any) =>
-            p.data.map((prod: any) => (
-              <ProductCard key={prod.id} product={prod} />
+          {data?.pages.flatMap((page) =>
+            page.data.map((prod) => (
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                onAdd={(productId) => {
+                  console.log(productId)
+                }}
+              />
             )),
           )}
         </Box>

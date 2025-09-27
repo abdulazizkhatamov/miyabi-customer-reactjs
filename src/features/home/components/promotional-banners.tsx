@@ -1,19 +1,64 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
-import type { Banner } from '../schema/banner.schema'
+import { Box, Skeleton, Typography } from '@mui/material'
+import { css } from '@emotion/react'
 
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/autoplay'
 import 'swiper/css/navigation'
+import { useQuery } from '@tanstack/react-query'
+import type { Banner } from '../../../shared/schema/banner.schema'
+import axiosInstance from '@/config/axios.config'
 
-interface BannersCarouselProps {
-  banners: Array<Banner>
-}
+export function PromotionalBanners() {
+  const { data, isFetching, isError } = useQuery<Array<Banner>>({
+    queryKey: ['banners'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/banners')
+      return response.data
+    },
+  })
 
-export default function BannersCarousel({ banners }: BannersCarouselProps) {
+  if (isFetching && !data) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        width="100%"
+        maxWidth="1024px"
+        mx="auto"
+      >
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={200}
+          sx={{ borderRadius: 2 }}
+        />
+      </Box>
+    )
+  }
+
+  if (isError) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height={200}
+      >
+        <Typography color="error">
+          Failed to load banners. Please try again later.
+        </Typography>
+      </Box>
+    )
+  }
+
+  if (!data || data.length === 0) {
+    return null
+  }
+
   return (
     <Swiper
       pagination={{ clickable: true }}
@@ -23,7 +68,7 @@ export default function BannersCarousel({ banners }: BannersCarouselProps) {
       modules={[Pagination, Navigation, Autoplay]}
       css={swiperStyles}
     >
-      {banners.map((banner) => (
+      {data.map((banner) => (
         <SwiperSlide key={banner.id}>
           <img
             src={banner.images[0]?.path}

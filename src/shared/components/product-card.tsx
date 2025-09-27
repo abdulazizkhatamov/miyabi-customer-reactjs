@@ -1,37 +1,160 @@
-import React from 'react'
-import { Box, Button, Typography } from '@mui/material'
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
+import { useTheme } from '@mui/material'
+import { Link } from '@tanstack/react-router'
+import Button from './ui/button'
+import type { Product } from '../schema/product.schema'
 
-function ProductCard({ product }: { product: any }) {
+/** 🔹 Product Card */
+export default function ProductCard({
+  product,
+  onAdd,
+}: {
+  product: Product
+  onAdd?: (product: Product) => void
+}) {
+  const theme = useTheme()
+
   return (
-    <Box
-      sx={{
-        border: '1px solid #ddd',
-        borderRadius: 2,
-        p: 1,
-        textAlign: 'center',
-      }}
+    <div
+      css={css({
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        backgroundColor: '#fff',
+        boxShadow: '0 0 12px rgba(0,0,0,.05)',
+        borderRadius: '.75rem',
+        overflow: 'hidden',
+        height: '100%',
+        transition: 'all .25s ease',
+
+        '&:hover': {
+          boxShadow: '0 6px 20px rgba(0,0,0,.1)',
+          transform: 'translateY(-2px)',
+        },
+
+        [theme.breakpoints.up('md')]: {
+          borderRadius: '1rem',
+        },
+      })}
     >
-      <img
-        src={product.images[0] ?? '/placeholder.jpg'}
-        alt={product.name}
-        style={{ width: '100%', borderRadius: 8, marginBottom: 8 }}
-      />
-      <Typography variant="subtitle1">{product.name}</Typography>
-      <Typography variant="body2" color="text.secondary">
-        {product.description}
-      </Typography>
-      <Typography fontWeight="bold" sx={{ mt: 1 }}>
-        {Number(product.price).toLocaleString()} UZS
-      </Typography>
-      <Button
-        variant="outlined"
-        size="small"
-        sx={{ mt: 1, textTransform: 'none' }}
+      {/* Product Image */}
+      <Link
+        to="/product/$slug"
+        params={{ slug: product.slug }}
+        css={css({
+          position: 'relative',
+          height: '7.75rem',
+          cursor: 'pointer',
+          overflow: 'hidden',
+
+          [theme.breakpoints.up('md')]: {
+            height: '12.5rem',
+          },
+
+          '& img': {
+            height: '100%',
+            width: '100%',
+            objectFit: 'cover',
+            transition: 'transform .3s ease',
+          },
+
+          '&:hover img': {
+            transform: 'scale(1.05)',
+          },
+        })}
       >
-        Add
-      </Button>
-    </Box>
+        <img
+          src={product.images[0]?.path || '/placeholder.png'}
+          alt={product.name || 'Product image'}
+        />
+      </Link>
+
+      {/* Product Details */}
+      <div
+        css={css({
+          padding: '1rem .5rem .75rem',
+          [theme.breakpoints.up('md')]: {
+            padding: '.75rem 1rem 1rem',
+          },
+        })}
+      >
+        <Link
+          to="/product/$slug"
+          params={{ slug: product.slug }}
+          css={css({ textDecoration: 'none', color: 'inherit' })}
+        >
+          <p
+            css={css({
+              fontSize: '1rem',
+              fontWeight: 400,
+              marginBottom: '.4375rem',
+              transition: 'color .2s ease',
+              cursor: 'pointer',
+              display: '-webkit-box',
+              WebkitLineClamp: 1, // ⬅️ max 2 lines
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+
+              [theme.breakpoints.up('md')]: {
+                fontSize: '1.125rem',
+                fontWeight: 600,
+              },
+            })}
+          >
+            {product.name}
+          </p>
+          <p
+            css={css({
+              fontSize: '.75rem',
+              color: 'var(--darkgray-4)',
+              display: '-webkit-box',
+              WebkitLineClamp: 2, // ⬅️ max 2 lines
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              [theme.breakpoints.up('md')]: { fontSize: '.875rem' },
+            })}
+          >
+            {product.description}
+          </p>
+        </Link>
+
+        {/* Price & Add to Cart */}
+        <div
+          css={css({
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '.75rem',
+            marginTop: '.75rem',
+
+            [theme.breakpoints.up('md')]: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            },
+          })}
+        >
+          <p
+            css={css({
+              fontSize: '1rem',
+              fontWeight: 600,
+              color: 'var(--darkgray-2)',
+              [theme.breakpoints.up('md')]: {
+                fontSize: '1.125rem',
+                fontWeight: 700,
+              },
+            })}
+          >
+            {product.price} USD
+          </p>
+
+          <Button variant="outline" onClick={() => onAdd?.(product)}>
+            Add
+          </Button>
+        </div>
+      </div>
+    </div>
   )
 }
-
-export default ProductCard

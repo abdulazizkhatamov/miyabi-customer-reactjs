@@ -5,13 +5,14 @@ import { css } from '@emotion/react'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import CategoryProducts from './category-products'
+import type { Category } from '@/shared/schema/category.schema'
 import axiosInstance from '@/config/axios.config'
 
 function CategoriesTabs() {
-  const { data: categories, isLoading } = useQuery({
+  const { data: categories = [], isLoading } = useQuery<Array<Category>>({
     queryKey: ['categories'],
-    queryFn: async () => {
-      const res = await axiosInstance.get('/categories')
+    queryFn: async (): Promise<Array<Category>> => {
+      const res = await axiosInstance.get<Array<Category>>('/categories')
       return res.data
     },
   })
@@ -21,7 +22,7 @@ function CategoriesTabs() {
   const theme = useTheme()
 
   useEffect(() => {
-    if (categories?.length > 0) {
+    if (categories.length > 0) {
       setActiveCat(categories[0].slug)
     }
   }, [categories])
@@ -69,7 +70,7 @@ function CategoriesTabs() {
             }
           `}
         >
-          {categories.map((c: any) => {
+          {categories.map((c) => {
             const isActive = c.slug === activeCat
 
             return (
@@ -120,7 +121,7 @@ function CategoriesTabs() {
           key={activeCat}
           categorySlug={activeCat}
           categoryName={
-            categories.find((c: any) => c.slug === activeCat)?.name || ''
+            categories.find((c) => c.slug === activeCat)?.name ?? ''
           }
         />
       )}

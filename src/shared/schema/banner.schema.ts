@@ -1,5 +1,5 @@
 import z from 'zod'
-import { imageSchema } from '@/features/images/schema/image.schema'
+import { imageSchema } from '@/shared/schema/image.schema'
 
 export const bannerSchema = z.object({
   id: z.string(),
