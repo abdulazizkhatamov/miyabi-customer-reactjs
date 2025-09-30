@@ -1,10 +1,10 @@
 // app/store.ts
 import { configureStore } from '@reduxjs/toolkit'
-import authReducer from '@/features/auth/store/auth.slice'
+import sessionReducer from '@/features/session/store/session.slice'
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    session: sessionReducer,
   },
 })
 

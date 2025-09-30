@@ -1,10 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Box, CircularProgress, Typography } from '@mui/material'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import type { ProductsPage } from '@/shared/schema/product.schema'
-import axiosInstance from '@/config/axios.config'
 import ProductCard from '@/shared/components/product-card'
-import { productsPageSchema } from '@/shared/schema/product.schema'
+import { useProducts } from '@/shared/api/product.api'
 
 function CategoryProducts({
   categorySlug,
@@ -16,19 +13,7 @@ function CategoryProducts({
   const loaderRef = useRef<HTMLDivElement | null>(null)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery<ProductsPage>({
-      queryKey: ['products', categorySlug],
-      queryFn: async ({ pageParam = 1 }): Promise<ProductsPage> => {
-        const res = await axiosInstance.get('/products', {
-          params: { categorySlug, page: pageParam, limit: 6 },
-        })
-        // ✅ validate response at runtime
-        return productsPageSchema.parse(res.data)
-      },
-      initialPageParam: 1,
-      getNextPageParam: (lastPage) =>
-        lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
-    })
+    useProducts(categorySlug)
 
   // infinite scroll observer
   useEffect(() => {
@@ -62,13 +47,7 @@ function CategoryProducts({
         >
           {data?.pages.flatMap((page) =>
             page.data.map((prod) => (
-              <ProductCard
-                key={prod.id}
-                product={prod}
-                onAdd={(productId) => {
-                  console.log(productId)
-                }}
-              />
+              <ProductCard key={prod.id} product={prod} />
             )),
           )}
         </Box>

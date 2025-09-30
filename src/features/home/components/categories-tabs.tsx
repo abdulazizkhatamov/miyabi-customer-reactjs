@@ -3,19 +3,11 @@ import { useEffect, useRef, useState } from 'react'
 import { Box, CircularProgress, IconButton, useTheme } from '@mui/material'
 import { css } from '@emotion/react'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { useQuery } from '@tanstack/react-query'
 import CategoryProducts from './category-products'
-import type { Category } from '@/shared/schema/category.schema'
-import axiosInstance from '@/config/axios.config'
+import { useCategories } from '@/shared/api/category.api'
 
 function CategoriesTabs() {
-  const { data: categories = [], isLoading } = useQuery<Array<Category>>({
-    queryKey: ['categories'],
-    queryFn: async (): Promise<Array<Category>> => {
-      const res = await axiosInstance.get<Array<Category>>('/categories')
-      return res.data
-    },
-  })
+  const { data: categories = [], isLoading } = useCategories()
 
   const [activeCat, setActiveCat] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)

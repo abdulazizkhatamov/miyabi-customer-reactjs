@@ -3,14 +3,14 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 
 import { Container } from '@mui/material'
-import type { QueryClient } from '@tanstack/react-query'
-import type { useAuth } from '@/features/auth/hooks/useAuth'
+import type { QueryClient, UseQueryResult } from '@tanstack/react-query'
+import type { Session } from '@/shared/api/auth.api'
 import Header from '@/shared/components/header'
 import Footer from '@/shared/components/footer'
 
-interface MyRouterContext {
+export interface MyRouterContext {
   queryClient: QueryClient
-  auth: ReturnType<typeof useAuth>
+  session: UseQueryResult<Session, Error>
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({

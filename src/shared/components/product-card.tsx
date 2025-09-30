@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import { useTheme } from '@mui/material'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouteContext } from '@tanstack/react-router'
+import { useAddToCart, useRemoveFromCart } from '../api/cart.api'
 import Button from './ui/button'
 import type { Product } from '../schema/product.schema'
 
@@ -14,6 +15,13 @@ export default function ProductCard({
   onAdd?: (product: Product) => void
 }) {
   const theme = useTheme()
+  const { session } = useRouteContext({ from: '__root__' })
+  const addToCart = useAddToCart()
+  const removeFromCart = useRemoveFromCart()
+
+  const cartItem = session.data?.cart?.items.find(
+    (item) => item.id === product.id,
+  )
 
   return (
     <div
@@ -150,9 +158,34 @@ export default function ProductCard({
             {product.price} USD
           </p>
 
-          <Button variant="outline" onClick={() => onAdd?.(product)}>
-            Add
-          </Button>
+          {!cartItem ? (
+            <Button
+              variant="outline"
+              onClick={() => addToCart.mutate(product.id)}
+            >
+              Add
+            </Button>
+          ) : (
+            <div
+              css={css({ display: 'flex', gap: '.5rem', alignItems: 'center' })}
+            >
+              <Button
+                // size="sm"
+                onClick={() => removeFromCart.mutate(product.id)}
+                disabled={removeFromCart.isPending}
+              >
+                -
+              </Button>
+              <span>{cartItem.quantity}</span>
+              <Button
+                // size="sm"
+                onClick={() => addToCart.mutate(product.id)}
+                disabled={addToCart.isPending}
+              >
+                +
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
