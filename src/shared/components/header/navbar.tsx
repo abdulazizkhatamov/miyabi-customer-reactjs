@@ -10,8 +10,10 @@ type NavbarProps = {
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-  const { data: session } = useSession()
+  // const { data: session } = useSession()
   const theme = useTheme()
+
+  const { data: session } = useSession()
 
   return (
     <div css={navbarWrapper(theme)}>

@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
 import { useTheme } from '@mui/material'
-import { Link, useRouteContext } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useAddToCart, useRemoveFromCart } from '../api/cart.api'
+import { useSession } from '../api/auth.api'
 import Button from './ui/button'
 import type { Product } from '../schema/product.schema'
 
@@ -14,14 +15,14 @@ export default function ProductCard({
   product: Product
   onAdd?: (product: Product) => void
 }) {
+  const { data: session } = useSession()
+
   const theme = useTheme()
-  const { session } = useRouteContext({ from: '__root__' })
+  // const session = useSession()
   const addToCart = useAddToCart()
   const removeFromCart = useRemoveFromCart()
 
-  const cartItem = session.data?.cart?.items.find(
-    (item) => item.id === product.id,
-  )
+  const cartItem = session?.cart?.items.find((item) => item.id === product.id)
 
   return (
     <div
