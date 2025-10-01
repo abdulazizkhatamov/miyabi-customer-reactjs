@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { Cart, User } from '../schema/session.schema'
+import type { User } from '../schema/session.schema'
 import axiosInstance from '@/config/axios.config'
 
 // 🔹 Central Session type
 export interface Session {
   user: User | null
-  cart: Cart | null
 }
 
 // 🔹 Session query

@@ -1,5 +1,16 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import type { Cart } from '../schema/cart.schema'
 import axiosInstance from '@/config/axios.config'
+
+export function useCart() {
+  return useQuery({
+    queryKey: ['cart'],
+    queryFn: async () => {
+      const res = await axiosInstance.get('/cart')
+      return res.data as Cart
+    },
+  })
+}
 
 // 🔹 Add item to cart (increment)
 export function useAddToCart() {
@@ -10,10 +21,10 @@ export function useAddToCart() {
       axiosInstance.post('/cart/add', { productId, quantity: 1 }),
 
     onMutate: async (productId: string) => {
-      await qc.cancelQueries({ queryKey: ['session'] })
-      const previous = qc.getQueryData(['session'])
+      await qc.cancelQueries({ queryKey: ['cart'] })
+      const previous = qc.getQueryData(['cart'])
 
-      qc.setQueryData(['session'], (old: any) => {
+      qc.setQueryData(['cart'], (old: any) => {
         const cart = old?.cart?.items || []
         const index = cart.findIndex((i: any) => i.id === productId)
 
@@ -27,11 +38,11 @@ export function useAddToCart() {
     },
 
     onError: (_err, _variables, context: any) => {
-      qc.setQueryData(['session'], context?.previous)
+      qc.setQueryData(['cart'], context?.previous)
     },
 
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['session'] })
+      qc.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 }
@@ -45,10 +56,10 @@ export function useRemoveFromCart() {
       axiosInstance.post('/cart/remove', { productId, quantity: 1 }),
 
     onMutate: async (productId: string) => {
-      await qc.cancelQueries({ queryKey: ['session'] })
-      const previous = qc.getQueryData(['session'])
+      await qc.cancelQueries({ queryKey: ['cart'] })
+      const previous = qc.getQueryData(['cart'])
 
-      qc.setQueryData(['session'], (old: any) => {
+      qc.setQueryData(['cart'], (old: any) => {
         const cart = old?.cart?.items || []
         const index = cart.findIndex((i: any) => i.id === productId)
 
@@ -65,11 +76,11 @@ export function useRemoveFromCart() {
     },
 
     onError: (_err, _variables, context: any) => {
-      qc.setQueryData(['session'], context?.previous)
+      qc.setQueryData(['cart'], context?.previous)
     },
 
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['session'] })
+      qc.invalidateQueries({ queryKey: ['cart'] })
     },
   })
 }

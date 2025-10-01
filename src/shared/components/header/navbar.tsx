@@ -3,7 +3,7 @@ import { css } from '@emotion/react'
 import { Badge, Container, useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
 import { Menu, Person, Search, ShoppingCart } from '@mui/icons-material'
-import { useSession } from '@/shared/api/auth.api'
+import { useCart } from '@/shared/api/cart.api'
 
 type NavbarProps = {
   onMenuClick: () => void
@@ -13,7 +13,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   // const { data: session } = useSession()
   const theme = useTheme()
 
-  const { data: session } = useSession()
+  const { data: cart } = useCart()
 
   return (
     <div css={navbarWrapper(theme)}>
@@ -57,7 +57,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
             {/* Cart with Badge */}
             <Badge
-              badgeContent={session?.cart?.items.length || 0}
+              badgeContent={cart?.items.length || 0}
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               slotProps={{
                 badge: {

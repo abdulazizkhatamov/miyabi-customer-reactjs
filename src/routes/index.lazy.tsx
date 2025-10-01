@@ -1,10 +1,10 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from '@tanstack/react-router'
 import { PromotionalBanners } from '@/features/home/components/promotional-banners'
 import CategoriesTabs from '@/features/home/components/categories-tabs'
 
 // ✅ prefetch on route load
-export const Route = createFileRoute('/')({
+export const Route = createLazyFileRoute('/')({
   component: RouteComponent,
 })
 
