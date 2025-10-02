@@ -1,20 +1,25 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { productsPageSchema } from '../schema/product.schema'
-import type { ProductsPage } from '../schema/product.schema'
 import axiosInstance from '@/config/axios.config'
 
-export function useProducts(categorySlug?: string, limit = 8) {
-  return useInfiniteQuery<ProductsPage>({
-    queryKey: ['products', categorySlug],
-    queryFn: async ({ pageParam = 1 }) => {
-      const res = await axiosInstance.get('/products', {
-        params: { categorySlug, page: pageParam, limit },
-      })
-      // ✅ validate response at runtime
-      return productsPageSchema.parse(res.data)
-    },
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) =>
-      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
+const fetchProducts = async ({
+  pageParam = null,
+  categoryId,
+}: {
+  pageParam?: string | null
+  categoryId: string
+}) => {
+  const res = await axiosInstance.get('/api/products', {
+    params: { categoryId, cursor: pageParam, take: 10 },
+  })
+  return res.data // { products: Product[], nextCursor: string | null }
+}
+
+export const useProducts = (categoryId: string) => {
+  return useInfiniteQuery({
+    queryKey: ['products', categoryId],
+    queryFn: ({ pageParam }) => fetchProducts({ pageParam, categoryId }),
+    initialPageParam: '1',
+    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+    enabled: !!categoryId, // wait until categoryId is set
   })
 }

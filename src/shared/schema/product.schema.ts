@@ -15,13 +15,4 @@ export const productSchema = z.object({
   images: z.array(imageSchema), // adjust if images are objects
 })
 
-export const productsPageSchema = z.object({
-  data: z.array(productSchema),
-  total: z.number(),
-  page: z.number(),
-  limit: z.number(),
-  totalPages: z.number(),
-})
-
 export type Product = z.infer<typeof productSchema>
-export type ProductsPage = z.infer<typeof productsPageSchema>
