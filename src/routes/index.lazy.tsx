@@ -25,7 +25,7 @@ const fetchProducts = async ({
   categoryId: string
 }) => {
   const res = await axiosInstance.get('/products', {
-    params: { categoryId, cursor: pageParam, take: 8 },
+    params: { categoryId, cursor: pageParam },
   })
   return res.data
 }
@@ -62,13 +62,10 @@ function CategorySection({
     return () => observer.disconnect()
   }, [])
 
-  const {
-    data: productsData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading: isProductsLoading,
-  } = useProducts(category.id, isInViewport)
+  const { data: productsData, isLoading: isProductsLoading } = useProducts(
+    category.id,
+    isInViewport,
+  )
 
   return (
     <Box
@@ -78,14 +75,23 @@ function CategorySection({
       }}
       data-id={category.id}
       css={{
-        minHeight: '400px',
         padding: '16px 0', // spacing between sections
       }}
     >
       <h2>{category.name}</h2>
 
       {isProductsLoading ? (
-        <CircularProgress />
+        <Box
+          css={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '120px',
+            width: '100%',
+          }}
+        >
+          <CircularProgress sx={{ color: 'var(--primary-color)' }} />
+        </Box>
       ) : (
         <div
           css={{
@@ -95,29 +101,25 @@ function CategorySection({
             marginTop: '16px',
           }}
         >
-          {productsData?.pages.map((page) =>
+          {productsData?.pages.flatMap((page) =>
             page.products.map((p: Product) => (
               <ProductCard key={p.id} product={p} />
             )),
           )}
+          {productsData &&
+            productsData.pages.every((page) => page.products.length === 0) && (
+              <Box
+                css={{
+                  gridColumn: '1 / -1',
+                  textAlign: 'center',
+                  color: '#888',
+                  padding: '32px 0',
+                }}
+              >
+                No products found in this category.
+              </Box>
+            )}
         </div>
-      )}
-
-      {hasNextPage && (
-        <button
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          css={{
-            marginTop: '16px',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            border: '1px solid #ccc',
-            background: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          {isFetchingNextPage ? 'Loading...' : 'Load more'}
-        </button>
       )}
     </Box>
   )
