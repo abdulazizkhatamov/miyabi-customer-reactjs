@@ -2,27 +2,17 @@
 import { css } from '@emotion/react'
 import { useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
-import { useAddToCart, useCart, useRemoveFromCart } from '../api/cart.api'
+import { useCart, useCartMutations } from '../api/cart.api'
 import Button from './ui/button'
 import type { Product } from '../schema/product.schema'
 
 /** 🔹 Product Card */
-export default function ProductCard({
-  product,
-  onAdd,
-}: {
-  product: Product
-  onAdd?: (product: Product) => void
-}) {
-  const { data: cart } = useCart()
-
+export default function ProductCard({ product }: { product: Product }) {
   const theme = useTheme()
-  // const session = useSession()
-  const addToCart = useAddToCart()
-  const removeFromCart = useRemoveFromCart()
+  const { data: cart } = useCart()
+  const { addToCart, removeFromCart } = useCartMutations()
 
-  const cartItem = cart?.items.find((item) => item.id === product.id)
-
+  const cartItem = cart?.items.find((i: any) => i.id === product.id)
   return (
     <div
       css={css({
@@ -162,15 +152,13 @@ export default function ProductCard({
             <Button
               variant="outline"
               onClick={() => addToCart.mutate(product.id)}
+              disabled={addToCart.isPending}
             >
               Add
             </Button>
           ) : (
-            <div
-              css={css({ display: 'flex', gap: '.5rem', alignItems: 'center' })}
-            >
+            <div css={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
               <Button
-                // size="sm"
                 onClick={() => removeFromCart.mutate(product.id)}
                 disabled={removeFromCart.isPending}
               >
@@ -178,7 +166,6 @@ export default function ProductCard({
               </Button>
               <span>{cartItem.quantity}</span>
               <Button
-                // size="sm"
                 onClick={() => addToCart.mutate(product.id)}
                 disabled={addToCart.isPending}
               >

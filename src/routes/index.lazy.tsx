@@ -49,6 +49,7 @@ function CategorySection({
   sectionRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>
 }) {
   const [isInViewport, setIsInViewport] = React.useState(false)
+  const [hasLoaded, setHasLoaded] = React.useState(false)
   const ref = React.useRef<HTMLDivElement | null>(null)
 
   // Intersection Observer to detect when section enters viewport
@@ -56,7 +57,7 @@ function CategorySection({
     if (!ref.current) return
     const observer = new IntersectionObserver(
       ([entry]) => setIsInViewport(entry.isIntersecting),
-      { rootMargin: '200px' }, // preload slightly before entering
+      { rootMargin: '200px' },
     )
     observer.observe(ref.current)
     return () => observer.disconnect()
@@ -64,8 +65,15 @@ function CategorySection({
 
   const { data: productsData, isLoading: isProductsLoading } = useProducts(
     category.id,
-    isInViewport,
+    isInViewport && !hasLoaded, // fetch only if section enters viewport and hasn't loaded yet
   )
+
+  // Mark as loaded once products are fetched
+  React.useEffect(() => {
+    if (productsData && !hasLoaded) {
+      setHasLoaded(true)
+    }
+  }, [productsData, hasLoaded])
 
   return (
     <Box
@@ -75,7 +83,7 @@ function CategorySection({
       }}
       data-id={category.id}
       css={{
-        padding: '16px 0', // spacing between sections
+        padding: '16px 0',
       }}
     >
       <h2>{category.name}</h2>
@@ -96,7 +104,7 @@ function CategorySection({
         <div
           css={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)', // 4 product cards per row
+            gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '16px',
             marginTop: '16px',
           }}
@@ -155,7 +163,7 @@ function RouteComponent() {
     setActiveCat(catId)
     const el = sectionRefs.current[catId]
     if (!el) return
-    const offset = 70 // sticky tab height
+    const offset = 70
     const top = el.getBoundingClientRect().top + window.scrollY - offset
     window.scrollTo({ top, behavior: 'smooth' })
   }

@@ -8,18 +8,18 @@ const fetchProducts = async ({
   pageParam?: string | null
   categoryId: string
 }) => {
-  const res = await axiosInstance.get('/api/products', {
-    params: { categoryId, cursor: pageParam, take: 10 },
+  const res = await axiosInstance.get('/products', {
+    params: { categoryId, cursor: pageParam },
   })
-  return res.data // { products: Product[], nextCursor: string | null }
+  return res.data
 }
 
-export const useProducts = (categoryId: string) => {
+export const useProducts = (categoryId: string, enabled: boolean) => {
   return useInfiniteQuery({
     queryKey: ['products', categoryId],
     queryFn: ({ pageParam }) => fetchProducts({ pageParam, categoryId }),
-    initialPageParam: '1',
     getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-    enabled: !!categoryId, // wait until categoryId is set
+    enabled,
+    initialPageParam: null,
   })
 }

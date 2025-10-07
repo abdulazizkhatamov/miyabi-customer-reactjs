@@ -1,86 +1,62 @@
+// hooks/useCart.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import type { Cart } from '../schema/cart.schema'
 import axiosInstance from '@/config/axios.config'
+
+export async function getCart() {
+  const res = await axiosInstance.get('/cart')
+  return res.data
+}
+
+export async function updateCart(
+  items: Array<{ id: string; quantity: number }>,
+) {
+  const res = await axiosInstance.post('/cart/update', { items })
+  return res.data
+}
+
+export async function clearCart() {
+  const res = await axiosInstance.post('/cart/clear')
+  return res.data
+}
 
 export function useCart() {
   return useQuery({
     queryKey: ['cart'],
-    queryFn: async () => {
-      const res = await axiosInstance.get('/cart')
-      return res.data as Cart
-    },
+    queryFn: getCart,
   })
 }
 
-// 🔹 Add item to cart (increment)
-export function useAddToCart() {
-  const qc = useQueryClient()
+export function useCartMutations() {
+  const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: (productId: string) =>
-      axiosInstance.post('/cart/add', { productId, quantity: 1 }),
-
-    onMutate: async (productId: string) => {
-      await qc.cancelQueries({ queryKey: ['cart'] })
-      const previous = qc.getQueryData(['cart'])
-
-      qc.setQueryData(['cart'], (old: any) => {
-        const cart = old?.cart?.items || []
-        const index = cart.findIndex((i: any) => i.id === productId)
-
-        if (index > -1) cart[index].quantity += 1
-        else cart.push({ id: productId, quantity: 1 })
-
-        return { ...old, cart: { ...old.cart, items: cart } }
-      })
-
-      return { previous }
+  const addToCart = useMutation({
+    mutationFn: async (id: string) => {
+      const currentCart = queryClient.getQueryData<any>(['cart'])
+      const items = [...(currentCart?.items ?? [])]
+      const item = items.find((i) => i.id === id)
+      if (item) {
+        item.quantity += 1
+      } else {
+        items.push({ id, quantity: 1 })
+      }
+      return updateCart(items)
     },
-
-    onError: (_err, _variables, context: any) => {
-      qc.setQueryData(['cart'], context?.previous)
-    },
-
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['cart'] })
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
   })
-}
 
-// 🔹 Remove item from cart (decrement)
-export function useRemoveFromCart() {
-  const qc = useQueryClient()
+  const removeFromCart = useMutation({
+    mutationFn: async (id: string) => {
+      const currentCart = queryClient.getQueryData<any>(['cart'])
+      let items =
+        currentCart?.items.map((i: any) =>
+          i.id === id ? { ...i, quantity: i.quantity - 1 } : i,
+        ) ?? []
 
-  return useMutation({
-    mutationFn: (productId: string) =>
-      axiosInstance.post('/cart/remove', { productId, quantity: 1 }),
-
-    onMutate: async (productId: string) => {
-      await qc.cancelQueries({ queryKey: ['cart'] })
-      const previous = qc.getQueryData(['cart'])
-
-      qc.setQueryData(['cart'], (old: any) => {
-        const cart = old?.cart?.items || []
-        const index = cart.findIndex((i: any) => i.id === productId)
-
-        if (index > -1) {
-          const newQty = cart[index].quantity - 1
-          if (newQty > 0) cart[index].quantity = newQty
-          else cart.splice(index, 1)
-        }
-
-        return { ...old, cart: { ...old.cart, items: cart } }
-      })
-
-      return { previous }
+      items = items.filter((i: any) => i.quantity > 0)
+      return updateCart(items)
     },
-
-    onError: (_err, _variables, context: any) => {
-      qc.setQueryData(['cart'], context?.previous)
-    },
-
-    onSettled: () => {
-      qc.invalidateQueries({ queryKey: ['cart'] })
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['cart'] }),
   })
+
+  return { addToCart, removeFromCart }
 }
