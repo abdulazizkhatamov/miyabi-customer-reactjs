@@ -4,41 +4,17 @@ import { css } from '@emotion/react'
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { Box, CircularProgress, IconButton, useTheme } from '@mui/material'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import type { Product } from '@/shared/schema/product.schema'
-import { useCategories } from '@/shared/api/category.api'
+import { categoriesQuery } from '@/shared/api/category.api'
 import { PromotionalBanners } from '@/features/home/components/promotional-banners'
-import axiosInstance from '@/config/axios.config'
 import ProductCard from '@/shared/components/product-card'
+import { productsQuery } from '@/shared/api/product.api'
 
 // ✅ prefetch on route load
 export const Route = createLazyFileRoute('/')({
   component: RouteComponent,
 })
-
-// --- Infinite query hook ---
-const fetchProducts = async ({
-  pageParam = null,
-  categoryId,
-}: {
-  pageParam?: string | null
-  categoryId: string
-}) => {
-  const res = await axiosInstance.get('/products', {
-    params: { categoryId, cursor: pageParam },
-  })
-  return res.data
-}
-
-const useProducts = (categoryId: string, enabled: boolean) => {
-  return useInfiniteQuery({
-    queryKey: ['products', categoryId],
-    queryFn: ({ pageParam }) => fetchProducts({ pageParam, categoryId }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
-    enabled,
-    initialPageParam: null,
-  })
-}
 
 // --- Category Section Component ---
 function CategorySection({
@@ -63,9 +39,8 @@ function CategorySection({
     return () => observer.disconnect()
   }, [])
 
-  const { data: productsData, isLoading: isProductsLoading } = useProducts(
-    category.id,
-    isInViewport && !hasLoaded, // fetch only if section enters viewport and hasn't loaded yet
+  const { data: productsData, isLoading: isProductsLoading } = useInfiniteQuery(
+    productsQuery(category.id, isInViewport && !hasLoaded),
   )
 
   // Mark as loaded once products are fetched
@@ -141,7 +116,7 @@ function RouteComponent() {
   const sectionRefs = React.useRef<Record<string, HTMLDivElement | null>>({})
 
   const { data: categories = [], isLoading: isCategoriesLoading } =
-    useCategories()
+    useQuery(categoriesQuery())
 
   // Set first category as active by default
   React.useEffect(() => {

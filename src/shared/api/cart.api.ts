@@ -1,5 +1,10 @@
 // hooks/useCart.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import axiosInstance from '@/config/axios.config'
 
 export async function getCart() {
@@ -19,8 +24,8 @@ export async function clearCart() {
   return res.data
 }
 
-export function useCart() {
-  return useQuery({
+export function cartQuery() {
+  return queryOptions({
     queryKey: ['cart'],
     queryFn: getCart,
   })

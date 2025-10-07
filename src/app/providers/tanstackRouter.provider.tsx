@@ -28,9 +28,9 @@ declare module '@tanstack/react-router' {
 export default function TanstackRouterProvider() {
   const session = useSession()
 
-  if (session.isLoading) {
-    return <div>Loading...</div>
-  }
-
-  return <RouterProvider router={router} context={{ ...context, session }} />
+  return (
+    <>
+      <RouterProvider router={router} context={{ ...context, session }} />
+    </>
+  )
 }

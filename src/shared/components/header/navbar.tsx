@@ -3,7 +3,8 @@ import { css } from '@emotion/react'
 import { Badge, Container, useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
 import { Menu, Person, Search, ShoppingCart } from '@mui/icons-material'
-import { useCart } from '@/shared/api/cart.api'
+import { useQuery } from '@tanstack/react-query'
+import { cartQuery } from '@/shared/api/cart.api'
 
 type NavbarProps = {
   onMenuClick: () => void
@@ -13,7 +14,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   // const { data: session } = useSession()
   const theme = useTheme()
 
-  const { data: cart } = useCart()
+  const { data: cart } = useQuery(cartQuery())
 
   return (
     <div css={navbarWrapper(theme)}>

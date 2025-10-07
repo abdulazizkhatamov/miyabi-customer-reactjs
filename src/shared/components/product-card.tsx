@@ -2,14 +2,15 @@
 import { css } from '@emotion/react'
 import { useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
-import { useCart, useCartMutations } from '../api/cart.api'
-import Button from './ui/button'
+import { useQuery } from '@tanstack/react-query'
+import { cartQuery, useCartMutations } from '../api/cart.api'
+import CartAction from './ui/cart-action'
 import type { Product } from '../schema/product.schema'
 
 /** 🔹 Product Card */
 export default function ProductCard({ product }: { product: Product }) {
   const theme = useTheme()
-  const { data: cart } = useCart()
+  const { data: cart } = useQuery(cartQuery())
   const { addToCart, removeFromCart } = useCartMutations()
 
   const cartItem = cart?.items.find((i: any) => i.id === product.id)
@@ -148,31 +149,11 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.price} USD
           </p>
 
-          {!cartItem ? (
-            <Button
-              variant="outline"
-              onClick={() => addToCart.mutate(product.id)}
-              disabled={addToCart.isPending}
-            >
-              Add
-            </Button>
-          ) : (
-            <div css={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
-              <Button
-                onClick={() => removeFromCart.mutate(product.id)}
-                disabled={removeFromCart.isPending}
-              >
-                -
-              </Button>
-              <span>{cartItem.quantity}</span>
-              <Button
-                onClick={() => addToCart.mutate(product.id)}
-                disabled={addToCart.isPending}
-              >
-                +
-              </Button>
-            </div>
-          )}
+          <CartAction
+            quantity={cartItem?.quantity ?? 0}
+            onAdd={() => addToCart.mutate(product.id)}
+            onRemove={() => removeFromCart.mutate(product.id)}
+          />
         </div>
       </div>
     </div>

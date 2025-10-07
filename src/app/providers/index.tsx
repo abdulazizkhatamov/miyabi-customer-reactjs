@@ -1,6 +1,7 @@
 import MuiProvider from './mui.provider'
 import ReduxStoreProvider from './reduxStore.provider'
 import TanstackRouterProvider from './tanstackRouter.provider'
+import { QueryLoader } from '@/shared/components/query-loader'
 
 import TanstackQueryProvider, {
   getContext as getTanstackQueryContext,
@@ -12,6 +13,7 @@ export default function Providers() {
   return (
     <ReduxStoreProvider>
       <TanstackQueryProvider {...TanStackQueryProviderContext}>
+        <QueryLoader />
         <MuiProvider>
           <TanstackRouterProvider />
         </MuiProvider>

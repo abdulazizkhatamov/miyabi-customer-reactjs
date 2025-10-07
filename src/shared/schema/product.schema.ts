@@ -1,4 +1,5 @@
 import z from 'zod'
+import { categorySchema } from './category.schema'
 import { imageSchema } from '@/shared/schema/image.schema'
 
 export const productSchema = z.object({
@@ -13,6 +14,7 @@ export const productSchema = z.object({
   updated_at: z.string().datetime(),
   category_id: z.string().uuid(),
   images: z.array(imageSchema), // adjust if images are objects
+  category: categorySchema,
 })
 
 export type Product = z.infer<typeof productSchema>
