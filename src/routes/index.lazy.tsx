@@ -24,6 +24,7 @@ function CategorySection({
   category: { id: string; name: string }
   sectionRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>
 }) {
+  const theme = useTheme()
   const [isInViewport, setIsInViewport] = React.useState(false)
   const [hasLoaded, setHasLoaded] = React.useState(false)
   const ref = React.useRef<HTMLDivElement | null>(null)
@@ -79,9 +80,16 @@ function CategorySection({
         <div
           css={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateColumns: 'repeat(2, 1fr)', // default: mobile (2 columns)
             gap: '16px',
             marginTop: '16px',
+
+            [theme.breakpoints.up('md')]: {
+              gridTemplateColumns: 'repeat(3, 1fr)', // tablet
+            },
+            [theme.breakpoints.up('lg')]: {
+              gridTemplateColumns: 'repeat(4, 1fr)', // desktop
+            },
           }}
         >
           {productsData?.pages.flatMap((page) =>

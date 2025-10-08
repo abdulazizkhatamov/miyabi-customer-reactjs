@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 import { Menu, Person, Search, ShoppingCart } from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
 import { cartQuery } from '@/shared/api/cart.api'
+import SearchDialog from '@/features/search/components/search-dialog'
 
 type NavbarProps = {
   onMenuClick: () => void
@@ -52,9 +53,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           {/* Right Section */}
           <div css={rightSection(theme)}>
             {/* Search Button */}
-            <div css={circleButton}>
-              <Search css={iconStyle} />
-            </div>
+            <SearchDialog />
 
             {/* Cart with Badge */}
             <Badge

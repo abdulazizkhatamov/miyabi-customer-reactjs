@@ -13,6 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CartIndexRouteImport } from './routes/cart/index'
 import { Route as ProductSlugIndexRouteImport } from './routes/product/$slug/index'
+import { Route as CategorySlugIndexRouteImport } from './routes/category/$slug/index'
 
 const IndexLazyRouteImport = createFileRoute('/')()
 const ContactsIndexLazyRouteImport = createFileRoute('/contacts/')()
@@ -53,6 +54,11 @@ const ProductSlugIndexRoute = ProductSlugIndexRouteImport.update({
   path: '/product/$slug/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategorySlugIndexRoute = CategorySlugIndexRouteImport.update({
+  id: '/category/$slug/',
+  path: '/category/$slug/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutIndexLazyRoute
   '/branches': typeof BranchesIndexLazyRoute
   '/contacts': typeof ContactsIndexLazyRoute
+  '/category/$slug': typeof CategorySlugIndexRoute
   '/product/$slug': typeof ProductSlugIndexRoute
 }
 export interface FileRoutesByTo {
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutIndexLazyRoute
   '/branches': typeof BranchesIndexLazyRoute
   '/contacts': typeof ContactsIndexLazyRoute
+  '/category/$slug': typeof CategorySlugIndexRoute
   '/product/$slug': typeof ProductSlugIndexRoute
 }
 export interface FileRoutesById {
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/about/': typeof AboutIndexLazyRoute
   '/branches/': typeof BranchesIndexLazyRoute
   '/contacts/': typeof ContactsIndexLazyRoute
+  '/category/$slug/': typeof CategorySlugIndexRoute
   '/product/$slug/': typeof ProductSlugIndexRoute
 }
 export interface FileRouteTypes {
@@ -87,9 +96,17 @@ export interface FileRouteTypes {
     | '/about'
     | '/branches'
     | '/contacts'
+    | '/category/$slug'
     | '/product/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cart' | '/about' | '/branches' | '/contacts' | '/product/$slug'
+  to:
+    | '/'
+    | '/cart'
+    | '/about'
+    | '/branches'
+    | '/contacts'
+    | '/category/$slug'
+    | '/product/$slug'
   id:
     | '__root__'
     | '/'
@@ -97,6 +114,7 @@ export interface FileRouteTypes {
     | '/about/'
     | '/branches/'
     | '/contacts/'
+    | '/category/$slug/'
     | '/product/$slug/'
   fileRoutesById: FileRoutesById
 }
@@ -106,6 +124,7 @@ export interface RootRouteChildren {
   AboutIndexLazyRoute: typeof AboutIndexLazyRoute
   BranchesIndexLazyRoute: typeof BranchesIndexLazyRoute
   ContactsIndexLazyRoute: typeof ContactsIndexLazyRoute
+  CategorySlugIndexRoute: typeof CategorySlugIndexRoute
   ProductSlugIndexRoute: typeof ProductSlugIndexRoute
 }
 
@@ -153,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/category/$slug/': {
+      id: '/category/$slug/'
+      path: '/category/$slug'
+      fullPath: '/category/$slug'
+      preLoaderRoute: typeof CategorySlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,6 +188,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutIndexLazyRoute: AboutIndexLazyRoute,
   BranchesIndexLazyRoute: BranchesIndexLazyRoute,
   ContactsIndexLazyRoute: ContactsIndexLazyRoute,
+  CategorySlugIndexRoute: CategorySlugIndexRoute,
   ProductSlugIndexRoute: ProductSlugIndexRoute,
 }
 export const routeTree = rootRouteImport

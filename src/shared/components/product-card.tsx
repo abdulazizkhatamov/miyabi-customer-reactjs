@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { cartQuery, useCartMutations } from '../api/cart.api'
-import CartAction from './ui/cart-action'
+import CartAction from './cart-action'
 import type { Product } from '../schema/product.schema'
 
 /** 🔹 Product Card */
@@ -64,7 +64,7 @@ export default function ProductCard({ product }: { product: Product }) {
         })}
       >
         <img
-          src={product.images[0]?.path || '/placeholder.png'}
+          src={product.images[0]?.path || '/images/placeholder.png'}
           alt={product.name || 'Product image'}
         />
       </Link>
