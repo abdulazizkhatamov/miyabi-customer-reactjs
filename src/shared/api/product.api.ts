@@ -3,6 +3,7 @@ import type { Product } from '../schema/product.schema'
 import type { PaginatedProducts } from '../schema/pagination.schema'
 import axiosInstance from '@/config/axios.config'
 
+
 const fetchProducts = async ({
   pageParam = null,
   categoryId,
