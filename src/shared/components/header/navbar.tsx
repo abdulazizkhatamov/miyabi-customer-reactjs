@@ -1,18 +1,25 @@
 /** @jsxImportSource @emotion/react */
+import React from 'react'
 import { css } from '@emotion/react'
 import { Badge, Container, useTheme } from '@mui/material'
 import { Link } from '@tanstack/react-router'
-import { Menu, Person, Search, ShoppingCart } from '@mui/icons-material'
+import {
+  Search as IconSearch,
+  Menu,
+  Person,
+  ShoppingCart,
+} from '@mui/icons-material'
 import { useQuery } from '@tanstack/react-query'
+import SearchOverlay from './search-overlay'
 import { cartQuery } from '@/shared/api/cart.api'
-import SearchDialog from '@/features/search/components/search-dialog'
 
 type NavbarProps = {
   onMenuClick: () => void
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-  // const { data: session } = useSession()
+  const [openSearch, setOpenSearch] = React.useState(false)
+
   const theme = useTheme()
 
   const { data: cart } = useQuery(cartQuery())
@@ -53,7 +60,14 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           {/* Right Section */}
           <div css={rightSection(theme)}>
             {/* Search Button */}
-            <SearchDialog />
+            <div css={circleButton} onClick={() => setOpenSearch(true)}>
+              <IconSearch css={iconStyle} />
+            </div>
+
+            <SearchOverlay
+              open={openSearch}
+              onClose={() => setOpenSearch(false)}
+            />
 
             {/* Cart with Badge */}
             <Badge

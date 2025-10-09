@@ -1,5 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
 import type { Product } from '../schema/product.schema'
+import type { PaginatedProducts } from '../schema/pagination.schema'
 import axiosInstance from '@/config/axios.config'
 
 const fetchProducts = async ({
@@ -34,7 +35,7 @@ const fetchSearchedProducts = async ({
   const res = await axiosInstance.get('/products/search', {
     params: { q, category, page, limit },
   })
-  return res.data
+  return res.data as PaginatedProducts
 }
 
 // Query options

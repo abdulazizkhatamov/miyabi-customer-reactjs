@@ -28,20 +28,24 @@ export default function Input({
 /* 🔹 Base Styles */
 const baseStyle = css({
   width: '100%',
+  boxSizing: 'border-box', // prevent overflow due to padding
   borderRadius: '8px',
   fontSize: '16px',
   border: '1px solid var(--lightgray-3)',
-  background: 'var(--background)',
+  background: 'var(--background, #fff)',
   color: 'var(--black-2)',
   transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+
   '::placeholder': {
     color: 'var(--text-light)',
   },
+
   ':focus': {
     outline: 'none',
     borderColor: 'var(--primary-color)',
     boxShadow: '0 0 0 2px var(--secondary-color)',
   },
+
   ':disabled': {
     background: 'var(--lightgray-4)',
     color: 'var(--midgray-1)',
