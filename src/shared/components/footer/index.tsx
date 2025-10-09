@@ -110,6 +110,7 @@ export default function Footer() {
                     width={110}
                     height={35}
                     alt="App Store"
+                    loading="lazy"
                   />
                 </a>
                 <a
@@ -123,6 +124,7 @@ export default function Footer() {
                     width={110}
                     height={35}
                     alt="Google Play"
+                    loading="lazy"
                   />
                 </a>
               </Box>

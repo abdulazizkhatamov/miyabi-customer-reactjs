@@ -23,7 +23,6 @@ const fetchProduct = async ({ slug }: { slug: string }) => {
 
 const fetchSearchedProducts = async ({
   q,
-  category,
   page = 1,
   limit = 7,
 }: {
@@ -33,7 +32,7 @@ const fetchSearchedProducts = async ({
   limit?: number
 }) => {
   const res = await axiosInstance.get('/products/search', {
-    params: { q, category, page, limit },
+    params: { q, page, limit },
   })
   return res.data as PaginatedProducts
 }
@@ -58,10 +57,10 @@ export const productQuery = (slug: string) => {
   })
 }
 
-export const searchProductsQuery = (q: string, category?: string, page = 1) => {
+export const searchProductsQuery = (q: string, page = 1) => {
   return queryOptions({
-    queryKey: ['searchProducts', { q, category, page }],
-    queryFn: () => fetchSearchedProducts({ q, category, page }),
+    queryKey: ['searchProducts', { q, page }],
+    queryFn: () => fetchSearchedProducts({ q, page }),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 1, // 1 minute cache
   })

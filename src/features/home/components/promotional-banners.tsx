@@ -72,8 +72,10 @@ export function PromotionalBanners() {
         <SwiperSlide key={banner.id}>
           <img
             src={banner.images[0]?.path}
-            alt=""
+            alt={banner.name || 'Banner'}
+            rel="preload"
             decoding="async"
+            fetchPriority="high"
             style={{
               width: '100%',
               height: '400px', // ✅ fixed height for all slides

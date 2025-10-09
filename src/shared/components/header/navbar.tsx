@@ -64,10 +64,12 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               <IconSearch css={iconStyle} />
             </div>
 
-            <SearchOverlay
-              open={openSearch}
-              onClose={() => setOpenSearch(false)}
-            />
+            {openSearch && (
+              <SearchOverlay
+                open={openSearch}
+                onClose={() => setOpenSearch(false)}
+              />
+            )}
 
             {/* Cart with Badge */}
             <Badge

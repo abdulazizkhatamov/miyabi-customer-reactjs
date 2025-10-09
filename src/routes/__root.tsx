@@ -8,7 +8,6 @@ import type { Session } from '@/shared/api/auth.api'
 import Header from '@/shared/components/header'
 import Footer from '@/shared/components/footer'
 import { NProgress } from '@/shared/components/nprogress'
-import { QueryLoader } from '@/shared/components/query-loader'
 
 export interface MyRouterContext {
   queryClient: QueryClient

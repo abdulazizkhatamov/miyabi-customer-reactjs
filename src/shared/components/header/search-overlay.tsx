@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import Input from '../input'
 import { searchProductsQuery } from '@/shared/api/product.api'
+import { useDebounce } from '@/shared/hooks/use-debounce'
 
 type SearchOverlayProps = {
   open: boolean
@@ -14,7 +15,8 @@ type SearchOverlayProps = {
 
 export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const [query, setQuery] = React.useState('')
-  const { data, isLoading } = useQuery(searchProductsQuery(query, undefined, 1))
+  const debouncedQuery = useDebounce(query, 500)
+  const { data, isLoading } = useQuery(searchProductsQuery(debouncedQuery, 1))
 
   // Escape key close
   React.useEffect(() => {
@@ -89,17 +91,19 @@ export default function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             </div>
           )}
 
-          {!isLoading && data?.items.length === 0 && query.trim() !== '' && (
-            <div
-              css={css({
-                padding: '1rem',
-                textAlign: 'center',
-                color: 'var(--midgray-2)',
-              })}
-            >
-              No products found
-            </div>
-          )}
+          {!isLoading &&
+            data?.items.length === 0 &&
+            debouncedQuery.trim() !== '' && (
+              <div
+                css={css({
+                  padding: '1rem',
+                  textAlign: 'center',
+                  color: 'var(--midgray-2)',
+                })}
+              >
+                No products found
+              </div>
+            )}
 
           {!isLoading &&
             data &&
