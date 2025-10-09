@@ -2,7 +2,6 @@
 import {
   queryOptions,
   useMutation,
-  useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import axiosInstance from '@/config/axios.config'
